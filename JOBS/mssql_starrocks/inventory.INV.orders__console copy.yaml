@@ -1,0 +1,22 @@
+env {
+  job.name = "mssql_starrocks.inventory.INV.orders__console"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  SqlServer-CDC {
+    plugin_output = "inventory"
+    username = "seatunnel_src"
+    password = "Abcd1234"
+    startup.mode="initial"
+    database-names = ["inventory"]
+    table-names = ["inventory.INV.orders_demo00"]
+    base-url = "jdbc:sqlserver://db01:1433;databaseName=inventory"
+  }
+}
+sink {
+  Console {
+  }
+}

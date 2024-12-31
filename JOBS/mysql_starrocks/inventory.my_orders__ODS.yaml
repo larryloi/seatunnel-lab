@@ -1,0 +1,37 @@
+env {
+  job.name = "mysql_starrocks.inventory.my_orders__ODS"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  MySQL-CDC {
+    server-id = 4653-4658
+    base-url = "jdbc:mysql://db01:3306/inventory"
+    username = "seatunnel_src"
+    password = "Abcd1234"
+    table-names = ["inventory.my_orders"]
+    
+    startup.mode = "initial"
+    schema-changes.enabled = true
+
+  }
+}
+
+sink {
+  StarRocks {
+    nodeUrls = ["10.2.2.208:1030","10.2.2.208:8040","10.2.2.208:8041","10.2.2.208:8042"]
+    base-url = "jdbc:mysql://mpp01.kaskade.local:3030/"
+    username = root
+    password = ""
+    database = "ODS"
+    table = "my_orders"
+    batch_max_rows = 3000
+    enable_upsert_delete = true
+    starrocks.config = {
+      format = "JSON"
+      strip_outer_array = true
+    }
+    }
+}

@@ -1,0 +1,35 @@
+env {
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 10000
+}
+
+source {
+  MySQL-CDC {
+    server-id = 5652-5657
+    base-url = "jdbc:mysql://db01:3306/inventory"
+    username = "seatunnel_src"
+    password = "Abcd1234"
+    table-names = ["inventory.my_orders"]
+    
+    startup.mode = "initial"
+    schema-changes.enabled = true
+
+  }
+}
+sink {
+    jdbc {
+        url = "jdbc:mysql://db01:3306/DWH_Seatunnel?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true"
+        driver = "com.mysql.cj.jdbc.Driver"
+        user = "seatunnel_sink"
+        password = "Abcd1234"
+        generate_sink_sql = true
+        database = DWH_Seatunnel
+        table = my_orders
+        primary_keys = ["id"]
+        field_ide = ORIGINAL
+        schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+        data_save_mode="APPEND_DATA"
+        enable_upsert = true
+    }
+}

@@ -1,0 +1,20 @@
+env {
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 10000
+}
+
+source {
+  MySQL-CDC {
+    base-url = "jdbc:mysql://rdb1:3306/inventory"
+    username = "dbt"
+    password = "Abcd1234"
+    table-names = ["inventory.my_orders"]
+    
+    startup.mode = "initial"
+  }
+}
+sink {
+  Console {
+  }
+}

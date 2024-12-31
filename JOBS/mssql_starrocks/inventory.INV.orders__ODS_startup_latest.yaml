@@ -1,0 +1,41 @@
+env {
+  job.name = "mssql_starrocks.inventory.INV.orders__ODS_startup_latest"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  SqlServer-CDC {
+    base-url = "jdbc:sqlserver://db01:1433;databaseName=inventory"
+    plugin_output = "orders_demo00"
+    username = "seatunnel_src"
+    password = "Abcd1234"
+    startup.mode="latest"
+    database-names = ["inventory"]
+    table-names = ["inventory.INV.orders_demo00"]
+    table-names-config = [
+      {
+        table = "inventory.INV.orders_demo00"
+        primaryKeys = ["id"]
+      }
+    ]
+  }
+}
+
+sink {
+  StarRocks {
+    nodeUrls = ["10.2.2.208:1030","10.2.2.208:8040","10.2.2.208:8041","10.2.2.208:8042"]
+    base-url = "jdbc:mysql://mpp01.kaskade.local:3030/"
+    username = root
+    password = ""
+    database = "ODS"
+    table = "orders_demo00_latest"
+    batch_max_rows = 3000
+    enable_upsert_delete = true
+    starrocks.config = {
+      format = "JSON"
+      strip_outer_array = true
+    }
+    }
+}
