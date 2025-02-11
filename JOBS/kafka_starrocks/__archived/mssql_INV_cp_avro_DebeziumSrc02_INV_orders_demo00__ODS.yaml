@@ -1,0 +1,74 @@
+env {
+  job.name = "mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00__ODS"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+
+source {
+  Kafka {
+    bootstrap.servers = "broker:29092"
+    topic = "mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00"
+    consumer.group = "seatunnel_mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00"
+    format = "debezium_json"
+    start_mode = latest
+    plugin_output = "fake1"
+    schema = {
+      fields {
+        before {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        after {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+
+        op = "string"
+        ts_ms = "int"
+
+      }
+    }
+  }
+}
+
+sink {
+  StarRocks {
+    nodeUrls = ["10.2.2.208:1030","10.2.2.208:8040","10.2.2.208:8041","10.2.2.208:8042"]
+    base-url = "jdbc:mysql://mpp01.kaskade.local:3030/"
+    username = seatunnel_sink
+    password = Abcd1234
+    database = "ODS"
+    table = "orders_demo00_from_kafka"
+    batch_max_rows = 3000
+    schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+    enable_upsert_delete = true
+    starrocks.config = {
+      format = "JSON"
+      strip_outer_array = true
+    }
+    plugin_input = "fake1"
+    plugin_output = "fake2"
+  }
+}

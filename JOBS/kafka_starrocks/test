@@ -1,0 +1,90 @@
+aa
+
+env { job.name = "mssql_starrocks.inventory.INV.orders__console" parallelism = 1 job.mode = "STREAMING"
+checkpoint.interval = 5000 } source { Kafka { bootstrap.servers = "broker:29092" topic =
+"mssql_INV_cp_json_DebeziumSrc01_INV_orders_demo00" group_id = "seatunnel-group" format = "json" schema = { fields {
+before { id = "int" order_id = "string" supplier_id = "int" item_id = "int" status = "string" qty = "int" net_price =
+"int" issued_at = "int" completed_at = "int" spec = "string" created_at = "int" updated_at = "int" } after { id = "int"
+order_id = "string" supplier_id = "int" item_id = "int" status = "string" qty = "int" net_price = "int" issued_at =
+"int" completed_at = "int" spec = "string" created_at = "int" updated_at = "int" } op = "string" ts_ms = "int" } }
+common-options { max.poll.interval.ms = 600000 session.timeout.ms = 60000 request.timeout.ms = 120000 } } } sink {
+StarRocks { nodeUrls = ["10.2.2.208:1030","10.2.2.208:8040","10.2.2.208:8041","10.2.2.208:8042"] base-url =
+"jdbc:mysql://mpp01.kaskade.local:3030/" username = seatunnel_sink password = Abcd1234 database = "ODS" table =
+"orders_demo00_from_kafka" batch_max_rows = 3000 schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST" enable_upsert_delete
+= true starrocks.config = { format = "JSON" strip_outer_array = true } } }
+
+
+
+env {
+  job.name = "mssql_starrocks.inventory.INV.orders__console"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  Kafka {
+    bootstrap.servers = "broker:29092"
+    topic = "mssql_INV_cp_json_DebeziumSrc01_INV_orders_demo00"
+    group_id = "seatunnel-group"
+    format = "json"
+    schema = {
+      fields {
+        before {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        after {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+
+        op = "string"
+        ts_ms = "int"
+      }
+    }
+    common-options {
+      max.poll.interval.ms = 600000
+      session.timeout.ms = 60000
+      request.timeout.ms = 120000
+    }
+  }
+}
+
+sink {
+  StarRocks {
+    nodeUrls = ["10.2.2.208:1030", "10.2.2.208:8040", "10.2.2.208:8041", "10.2.2.208:8042"]
+    base-url = "jdbc:mysql://mpp01.kaskade.local:3030/"
+    username = "seatunnel_sink"
+    password = "Abcd1234"
+    database = "ODS"
+    table = "orders_demo00_from_kafka"
+    batch_max_rows = 3000
+    schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+    enable_upsert_delete = true
+    starrocks.config = {
+      format = "JSON"
+      strip_outer_array = true
+    }
+  }
+}

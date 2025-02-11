@@ -24,6 +24,6 @@ hazelcast-client:
       cluster-connect-timeout-millis: 3000
   network:
     cluster-members:
-      - 172.16.0.2
-      - 172.16.0.3
-      - 172.16.0.4
+      - 172.19.0.11
+      - 172.19.0.12
+      - 172.19.0.13

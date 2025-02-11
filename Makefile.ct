@@ -1,0 +1,2 @@
+up:
+	/opt/seatunnel/bin/seatunnel.sh --config ${name}

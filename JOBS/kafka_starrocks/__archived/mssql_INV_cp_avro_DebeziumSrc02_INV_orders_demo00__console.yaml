@@ -1,0 +1,62 @@
+env {
+  job.name = "mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00__console"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+
+source {
+  Kafka {
+    bootstrap.servers = "broker:29092"
+    topic = "mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00"
+    consumer.group = "seatunnel_mssql_INV_cp_avro_DebeziumSrc02_INV_orders_demo00"
+    format = avro
+    schema = {
+      fields {
+        before {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        after {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        op = "string"
+        ts_ms = "int"
+      }      
+    }
+    common-options { 
+      max.poll.interval.ms = 600000 
+      session.timeout.ms = 60000 
+      request.timeout.ms = 120000
+    }
+  }
+}
+
+sink {
+  Console {
+    log.print.data = true
+    log.print.delay.ms = 1000
+  }
+}

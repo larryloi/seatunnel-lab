@@ -1,0 +1,77 @@
+
+env {
+  job {
+    name = "Kafka_to_StarRocks"
+    parallelism = 1
+  }
+}
+
+source {
+  Kafka {
+    bootstrap.servers = "broker:29092"
+    topics = ["mssql_INV_cp_avro_CDC_DebeziumSrc02_inventory_INV_orders_demo00"]
+    group_id = "seatunnel-group"
+    format = "json"
+    schema = {
+      fields {
+        before {
+          id = "int64"
+          order_id = "string"
+          supplier_id = "int32"
+          item_id = "int32"
+          status = "string"
+          qty = "int32"
+          net_price = "int32"
+          issued_at = "int64"
+          completed_at = "int64"
+          spec = "string"
+          created_at = "int64"
+          updated_at = "int64"
+        }
+        after {
+          id = "int64"
+          order_id = "string"
+          supplier_id = "int32"
+          item_id = "int32"
+          status = "string"
+          qty = "int32"
+          net_price = "int32"
+          issued_at = "int64"
+          completed_at = "int64"
+          spec = "string"
+          created_at = "int64"
+          updated_at = "int64"
+        }
+        source = "struct"
+        op = "string"
+        ts_ms = "int64"
+        transaction = "struct"
+      }
+    }
+  }
+}
+
+sink {
+  StarRocks {
+    nodeUrls = ["10.2.2.208:1030", "10.2.2.208:8040", "10.2.2.208:8041", "10.2.2.208:8042"]
+    jdbc_url = "jdbc:mysql://mpp01.kaskade.local:3030/your_database_name"
+    username = "seatunnel_sink"
+    password = "xxx"
+    table = "your_table_name"
+    batch_size = 5000
+    column_mapping = {
+      id = "id"
+      order_id = "order_id"
+      supplier_id = "supplier_id"
+      item_id = "item_id"
+      status = "status"
+      qty = "qty"
+      net_price = "net_price"
+      issued_at = "issued_at"
+      completed_at = "completed_at"
+      spec = "spec"
+      created_at = "created_at"
+      updated_at = "updated_at"
+    }
+  }
+}

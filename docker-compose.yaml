@@ -2,11 +2,15 @@
 
 services:
   master:
-    image: apache/seatunnel
+    image: apache/seatunnel:2.3.9
+    hostname: seatunnel-master
     container_name: seatunnel-master
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.16.0.2,172.16.0.3,172.16.0.4    
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11,172.199.0.12,172.199.0.13
+      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
+        #- IJAVA_CLASSPATH=/opt/seatunnel/lib
+      #- JAVA_CLASSPATH=/opt/seatunnel/lib
     entrypoint: >
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r master -DJvmOption=\"-Xms2G -Xmx2G\"
@@ -15,93 +19,116 @@ services:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config
+      - ./lib:/opt/seatunnel/lib
       - ./shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
+      - ./Makefile.ct:/opt/seatunnel/Makefile
+      - ./starter:/opt/seatunnel/starter
+      - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
-      seatunnel-network:
-        ipv4_address: 172.16.0.2
+      integration:
+        ipv4_address: 172.199.0.11
 
   worker1:
-    image: apache/seatunnel
+    image: apache/seatunnel:2.3.9
+    hostname: seatunnel-worker-1
     container_name: seatunnel-worker-1
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.16.0.2,172.16.0.3,172.16.0.4
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11,172.199.0.12,172.199.0.13
+      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
+        #- IJAVA_CLASSPATH=/opt/seatunnel/lib
+      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
     entrypoint: >
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms2G -Xmx2G\"
       " 
     volumes:
       - ./config:/opt/seatunnel/config
+      - ./lib:/opt/seatunnel/lib
+      - ./starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:
-      seatunnel-network:
-        ipv4_address: 172.16.0.3
+      integration:
+        ipv4_address: 172.199.0.12
 
   worker2:
-    image: apache/seatunnel
+    image: apache/seatunnel:2.3.9
+    hostname: seatunnel-worker-2
     container_name: seatunnel-worker-2
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.16.0.2,172.16.0.3,172.16.0.4
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11,172.199.0.12,172.199.0.13
+      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
+        #- IJAVA_CLASSPATH=/opt/seatunnel/lib
+        #- JAVA_CLASSPATH=/opt/seatunnel/lib
     entrypoint: >
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms2G -Xmx2G\"
       " 
     volumes:
       - ./config:/opt/seatunnel/config
+      - ./lib:/opt/seatunnel/lib
+      - ./starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:
-      seatunnel-network:
-        ipv4_address: 172.16.0.4
+      integration:
+        ipv4_address: 172.199.0.13
 
-  mysql:
-    build:
-      context: ./mysql
-    container_name: seatunnel-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: '123456'
-      MYSQL_DATABASE: seatunnel
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      seatunnel-network:
-        ipv4_address: 172.16.0.200
+#   mysql:
+#     build:
+#       context: ./mysql
+#     hostname: seatunnel-mysql
+#     container_name: seatunnel-mysql
+#     environment:
+#       MYSQL_ROOT_PASSWORD: '123456'
+#       MYSQL_DATABASE: seatunnel
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#     networks:
+#       integration:
+#         ipv4_address: 172.199.0.20
 
-  web:
-    build:
-      context: ./seatunnel-web
-    container_name: seatunnel-web
-    environment:
-      - SEATUNNEL_MASTER_HOST=172.16.0.2
-      - MYSQL_HOST=172.16.0.200
-      - MYSQL_PORT=3306
-      - MYSQL_DB=seatunnel
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=123456
-    ports:
-      - "8080:8080"
-      - "8801:8801"
-    networks:
-      seatunnel-network:
-        ipv4_address: 172.16.0.210
-    depends_on:
-      - master
-      - mysql
-    volumes:
-      - ./shared-connectors:/shared-connectors
-      - ./seatunnel-web/application.yml:/app/conf/application.yml
+#   web:
+#     build:
+#       context: ./seatunnel-web
+#     hostname: seatunnel-web
+#     container_name: seatunnel-web
+#     environment:
+#       - SEATUNNEL_MASTER_HOST=172.199.0.11
+#       - MYSQL_HOST=172.199.0.20
+#       - MYSQL_PORT=3306
+#       - MYSQL_DB=seatunnel
+#       - MYSQL_USER=root
+#       - MYSQL_PASSWORD=123456
+#     ports:
+#       - "8080:8080"
+#       - "8801:8801"
+#     networks:
+#       integration:
+#         ipv4_address: 172.199.0.21
+#     depends_on:
+#       - master
+#       - mysql
+#     volumes:
+#       - ./shared-connectors:/shared-connectors
+#       - ./seatunnel-web/application.yml:/app/conf/application.yml
+
+# networks:
+#   integration:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.199.0.0/24
+#           gateway: 172.199.0.1
 
 networks:
-  seatunnel-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.16.0.0/24
+  integration:
+    external: true
 
 volumes:
   mysql_data:

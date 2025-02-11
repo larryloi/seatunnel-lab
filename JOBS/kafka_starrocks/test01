@@ -1,0 +1,75 @@
+env {
+  job.name = "test01"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+  log.level = "DEBUG"
+}
+
+source {
+  Kafka {
+    bootstrap.servers = "broker:29092"
+    topic = "mssql_INV_json_Cdc_Src01_INV_orders_demo00"
+    consumer.group = "seatunnel_mssql_INV_json_Cdc_Src01_INV_orders_demo00__test01"
+    result_table_name = "kafka_table"
+    start_mode = "earliest"
+    debezium_record_include_schema = false
+    plugin_name= "Kafka",
+    format = "debezium_json"
+    log.print.data = true
+    schema = {
+      fields {
+        before {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        after {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+
+        op = "string"
+        ts_ms = "int"
+
+      }
+    }
+  }
+}
+
+sink {
+    jdbc {
+        url = "jdbc:mysql://db01.kaskade.local:3306/DWH_Seatunnel?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true"
+        driver = "com.mysql.cj.jdbc.Driver"
+        user = "seatunnel_sink"
+        password = "Abcd1234"
+        database = "DWH_Seatunnel"
+        table = "test01"
+        primary_keys = ["id"]
+        field_ide = "ORIGINAL"
+        schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+        data_save_mode = "APPEND_DATA"
+        enable_upsert = true
+        generate_sink_sql = true
+        format = debezium_json
+    }
+}

@@ -1,0 +1,52 @@
+env {
+  job.name = "mssql_starrocks.inventory.INV.orders__ODS_startup_latest"
+  parallelism = 1
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  SqlServer-CDC {
+    base-url = "jdbc:sqlserver://db01:1433;databaseName=inventory"
+    plugin_output = "orders_demo00"
+    username = "seatunnel_src"
+    password = "Abcd1234"
+    startup.mode="latest"
+    database-names = ["inventory"]
+    table-names = ["inventory.INV.orders_demo00"]
+    table-names-config = [
+      {
+        table = "inventory.INV.orders_demo00"
+        primaryKeys = ["id"]
+      }
+    ]
+  }
+}
+
+
+sink {
+  Iceberg {
+    catalog_name = "ods"
+    iceberg.catalog.config = {
+      "type" = "rest"
+      "uri" = "http://iceberg-rest:8181"
+      "warehouse" = "s3://warehouse/"
+      "io-impl" = "org.apache.iceberg.aws.s3.S3FileIO"
+      "s3.endpoint" = "http://minio:9000"
+      "s3.access-key-id" = "admin"
+      "s3.secret-access-key" = "password"
+      "s3.path-style-access" = true
+    }
+    namespace = "ods_namespace"
+    table = "iceberg_sink_orders_demo00"
+    iceberg.table.write-props = {
+      write.format.default = "parquet"
+      write.target-file-size-bytes = 536870912
+    }
+    iceberg.table.primary-keys = ["id"]
+    iceberg.table.partition-keys = ["f_datetime"]
+    iceberg.table.upsert-mode-enabled = true
+    iceberg.table.schema-evolution-enabled = true
+    case_sensitive = true
+  }
+}

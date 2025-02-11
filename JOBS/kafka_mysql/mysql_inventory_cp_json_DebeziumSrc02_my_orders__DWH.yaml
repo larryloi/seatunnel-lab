@@ -1,0 +1,61 @@
+env {
+  job.name = "mysql_inventory_cp_json_DebeziumSrc02_my_orders__DWH"
+  execution.parallelism = 2
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+
+source {
+  Kafka {
+    plugin_output = "source1"
+
+    bootstrap.servers = "broker:29092"
+    topic = "mysql_inventory_cp_json_DebeziumSrc02_my_orders"
+    consumer.group = "seatunnel_mysql_inventory_cp_json_DebeziumSrc02_my_orders__DWH"
+    format = "debezium_json"
+    debezium_record_include_schema = false
+    start_mode = latest
+    kafka.config = {
+      auto.offset.reset = "latest"
+      enable.auto.commit = "true"
+      max.partition.fetch.bytes = "5242880"
+      session.timeout.ms = "30000"
+      max.poll.records = "100000"
+    }
+    common-options { 
+      max.poll.interval.ms = 600000 
+      session.timeout.ms = 60000 
+      request.timeout.ms = 120000
+    }
+
+    fields {
+        after {
+          id = "int"
+      }
+
+    }
+  }
+}
+
+
+
+sink {
+
+    jdbc {
+        plugin_input = "source1"
+        url = "jdbc:mysql://db01.kaskade.local:3306/DWH_Seatunnel?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true"
+        driver = "com.mysql.cj.jdbc.Driver"
+        user = "seatunnel_sink"
+        password = "Abcd1234"
+        generate_sink_sql = true
+        database = DWH_Seatunnel
+        table = my_orders_seatunnel_kafka
+        #primary_keys = ["id"]
+        field_ide = ORIGINAL
+        schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+        data_save_mode="APPEND_DATA"
+        # enable_upsert = true
+    }    
+}
+
