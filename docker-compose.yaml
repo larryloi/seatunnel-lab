@@ -19,11 +19,11 @@ services:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config
-      - ./lib:/opt/seatunnel/lib
-      - ./shared-connectors:/shared-connectors
+      - ../st_src/lib:/opt/seatunnel/lib
+      - ../st_src/shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-      - ./starter:/opt/seatunnel/starter
+      - ../st_src/starter:/opt/seatunnel/starter
       - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
       integration:
@@ -45,8 +45,8 @@ services:
       " 
     volumes:
       - ./config:/opt/seatunnel/config
-      - ./lib:/opt/seatunnel/lib
-      - ./starter:/opt/seatunnel/starter
+      - ../st_src/lib:/opt/seatunnel/lib
+      - ../st_src/starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:
@@ -69,8 +69,8 @@ services:
       " 
     volumes:
       - ./config:/opt/seatunnel/config
-      - ./lib:/opt/seatunnel/lib
-      - ./starter:/opt/seatunnel/starter
+      - ../st_src/lib:/opt/seatunnel/lib
+      - ../st_src/starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:

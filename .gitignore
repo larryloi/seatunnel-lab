@@ -1,0 +1,4 @@
+lib/*.jar
+shared-connectors/*.jar
+starter/*.jar
+starter/logging/*.jar
