@@ -13,17 +13,17 @@ services:
       #- JAVA_CLASSPATH=/opt/seatunnel/lib
     entrypoint: >
       /bin/sh -c "
-      /opt/seatunnel/bin/seatunnel-cluster.sh -r master -DJvmOption=\"-Xms2G -Xmx2G\"
+      /opt/seatunnel/bin/seatunnel-cluster.sh -r master -DJvmOption=\"-Xms4G -Xmx4G\"
       "    
     ports:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config
-      - ../st_src/lib:/opt/seatunnel/lib
-      - ../st_src/shared-connectors:/shared-connectors
+        #- ../st_src/lib:/opt/seatunnel/lib
+        #- ../st_src/shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-      - ../st_src/starter:/opt/seatunnel/starter
+        #- ../st_src/starter:/opt/seatunnel/starter
       - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
       integration:
@@ -41,12 +41,12 @@ services:
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
     entrypoint: >
       /bin/sh -c "
-      /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms2G -Xmx2G\"
+      /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms4G -Xmx4G\"
       " 
     volumes:
       - ./config:/opt/seatunnel/config
-      - ../st_src/lib:/opt/seatunnel/lib
-      - ../st_src/starter:/opt/seatunnel/starter
+      # - ../st_src/lib:/opt/seatunnel/lib
+      # - ../st_src/starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:
@@ -65,12 +65,12 @@ services:
         #- JAVA_CLASSPATH=/opt/seatunnel/lib
     entrypoint: >
       /bin/sh -c "
-      /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms2G -Xmx2G\"
+      /opt/seatunnel/bin/seatunnel-cluster.sh -r worker -DJvmOption=\"-Xms4G -Xmx4G\"
       " 
     volumes:
       - ./config:/opt/seatunnel/config
-      - ../st_src/lib:/opt/seatunnel/lib
-      - ../st_src/starter:/opt/seatunnel/starter
+      # - ../st_src/lib:/opt/seatunnel/lib
+      # - ../st_src/starter:/opt/seatunnel/starter
     depends_on:
       - master
     networks:
