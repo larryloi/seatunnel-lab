@@ -1,5 +1,5 @@
 network.create:
-	docker network create --driver bridge --subnet 172.19.0.0/24 --gateway 172.19.0.1 integration || true
+	docker network create --driver bridge --subnet 172.199.0.0/24 --gateway 172.199.0.1 integration || true
 
 ps:
 	docker compose ps

@@ -2,7 +2,10 @@
 
 services:
   master:
-    image: apache/seatunnel:2.3.9
+    # image: apache/seatunnel:2.3.9
+    build:
+      context: .
+      dockerfile: ./Dockerfile-seatunnel-kas
     hostname: seatunnel-master
     container_name: seatunnel-master
     environment:
@@ -23,14 +26,17 @@ services:
         #- ../st_src/shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-        #- ../st_src/starter:/opt/seatunnel/starter
-      - ./job_run.sh:/opt/seatunnel/job_run.sh
+      # - ../st_src/starter:/opt/seatunnel/starter
+      # - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
       integration:
         ipv4_address: 172.199.0.11
 
   worker1:
-    image: apache/seatunnel:2.3.9
+    #image: apache/seatunnel:2.3.9
+    build:
+      context: .
+      dockerfile: ./Dockerfile-seatunnel-kas
     hostname: seatunnel-worker-1
     container_name: seatunnel-worker-1
     environment:
@@ -45,6 +51,8 @@ services:
       " 
     volumes:
       - ./config:/opt/seatunnel/config
+      - ./JOBS:/opt/seatunnel/JOBS
+      - ./Makefile.ct:/opt/seatunnel/Makefile
       # - ../st_src/lib:/opt/seatunnel/lib
       # - ../st_src/starter:/opt/seatunnel/starter
     depends_on:
@@ -54,7 +62,10 @@ services:
         ipv4_address: 172.199.0.12
 
   worker2:
-    image: apache/seatunnel:2.3.9
+    # image: apache/seatunnel:2.3.9
+    build:
+      context: .
+      dockerfile: ./Dockerfile-seatunnel-kas
     hostname: seatunnel-worker-2
     container_name: seatunnel-worker-2
     environment:
@@ -69,6 +80,8 @@ services:
       " 
     volumes:
       - ./config:/opt/seatunnel/config
+      - ./JOBS:/opt/seatunnel/JOBS
+      - ./Makefile.ct:/opt/seatunnel/Makefile      
       # - ../st_src/lib:/opt/seatunnel/lib
       # - ../st_src/starter:/opt/seatunnel/starter
     depends_on:

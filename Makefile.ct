@@ -1,2 +1,8 @@
 up:
-	/opt/seatunnel/bin/seatunnel.sh --config ${name}
+	nohup /opt/seatunnel/bin/seatunnel.sh --config ${name} 2>&1 &
+
+list:
+	/opt/seatunnel/bin/seatunnel.sh --list|grep -v 'INFO'
+
+cancel:
+	/opt/seatunnel/bin/seatunnel.sh --cancel-job ${name}
