@@ -1,0 +1,45 @@
+env {
+  job.name = "TEST_mysql_inventory__DWH"
+  execution.parallelism = 2
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+  job.lifetime = "1h"
+}
+
+source {
+  Kafka {
+    schema = {
+      fields {
+        id = "int"
+        order_id = "string"
+        supplier_id = "int"
+        item_id = "int"
+        status = "string"
+        qty = "int"
+        net_price = "int"
+        tax_rate = "double"
+        issued_at = "long"
+        completed_at = "long"
+        spec = "string"
+        created_at = "long"
+        updated_at = "long"
+      }
+    }
+    
+    consumer.group = "TEST_mysql_inventory__DWH"
+    topic = "mysql_inventory_cp_json_JdbcSrc01_my_orders"
+    bootstrap.servers = "broker:29092"
+    start_mode = "earliest"
+    kafka.config = {
+      auto.offset.reset = "earliest"
+      enable.auto.commit = "true"
+      max.partition.fetch.bytes = "5242880"
+      session.timeout.ms = "30000"
+      max.poll.records = "100000"
+    }
+  }  
+}
+sink {
+  Console {}
+}
+

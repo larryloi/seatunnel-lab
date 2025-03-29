@@ -1,0 +1,167 @@
+env {
+  job.name = "mysql_inventory_cp_json_DebeziumSrc02_my_orders__DWH"
+  execution.parallelism = 2
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+source {
+  Kafka {
+    plugin_output = "fake1"
+
+    bootstrap.servers = "broker:29092"
+    topic = "mysql_inventory_cp_json_DebeziumSrc02_my_orders"
+    consumer.group = "seatunnel_mysql_inventory_cp_json_DebeziumSrc02_my_orders__DWH"
+    format = "debezium_json"
+    debezium_record_include_schema = false
+    start_mode = latest
+    kafka.config = {
+      auto.offset.reset = "latest"
+      enable.auto.commit = "true"
+      max.partition.fetch.bytes = "5242880"
+      session.timeout.ms = "30000"
+      max.poll.records = "100000"
+    }
+    common-options { 
+      max.poll.interval.ms = 600000 
+      session.timeout.ms = 60000 
+      request.timeout.ms = 120000
+    }
+
+    schema = {
+      fields {
+        before_id = "int"
+        before_order_id = "string"
+        before_supplier_id = "int"
+        before_item_id = "int"
+        before_status = "string"
+        before_qty = "int"
+        before_net_price = "int"
+        before_issued_at = "int"
+        before_completed_at = "int"
+        before_spec = "string"
+        before_created_at = "int"
+        before_updated_at = "int"
+        after_id = "int"
+        after_order_id = "string"
+        after_supplier_id = "int"
+        after_item_id = "int"
+        after_status = "string"
+        after_qty = "int"
+        after_net_price = "int"
+        after_issued_at = "int"
+        after_completed_at = "int"
+        after_spec = "string"
+        after_created_at = "int"
+        after_updated_at = "int"
+        op = "string"
+        ts_ms = "int"
+      }      
+    }
+  }
+}
+
+sink {
+  Jdbc {
+    url = "jdbc:mysql://db01:3306/DWH_Seatunnel?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true"
+    driver = "com.mysql.cj.jdbc.Driver"
+    user = "seatunnel_sink"
+    password = "Abcd1234"
+    generate_sink_sql = true
+    database = "DWH_Seatunnel"
+    table = "my_orders_seatunnel_kafka"
+    # primary_keys = ["after_id"]
+    field_ide = ORIGINAL
+    schema_save_mode = "CREATE_SCHEMA_WHEN_NOT_EXIST"
+    #data_save_mode = "APPEND_DATA"
+    # enable_upsert = true
+  }
+}
+
+
+
+
+
+
+
+
+
+env {
+  job.name = "mysql_inventory_cp_json_DebeziumSrc02_my_orders__console"
+  execution.parallelism = 2
+  job.mode = "STREAMING"
+  checkpoint.interval = 5000
+}
+
+
+source {
+  Kafka {
+    plugin_output = "fake1"
+
+    bootstrap.servers = "broker:29092"
+    topic = "mysql_inventory_cp_json_DebeziumSrc02_my_orders"
+    consumer.group = "seatunnel_mysql_inventory_cp_json_DebeziumSrc02_my_orders__console"
+    format = "debezium_json"
+    debezium_record_include_schema = false
+    start_mode = latest
+    kafka.config = {
+      auto.offset.reset = "latest"
+      enable.auto.commit = "true"
+      max.partition.fetch.bytes = "5242880"
+      session.timeout.ms = "30000"
+      max.poll.records = "100000"
+    }
+    common-options { 
+      max.poll.interval.ms = 600000 
+      session.timeout.ms = 60000 
+      request.timeout.ms = 120000
+    }
+
+    schema = {
+      fields {
+        before {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+        after {
+          id = "int"
+          order_id = "string"
+          supplier_id = "int"
+          item_id = "int"
+          status = "string"
+          qty = "int"
+          net_price = "int"
+          issued_at = "int"
+          completed_at = "int"
+          spec = "string"
+          created_at = "int"
+          updated_at = "int"
+        }
+
+        op = "string"
+        ts_ms = "int"
+      }      
+    }
+  }
+}
+
+
+
+sink {
+  Console {
+    plugin_input = "fake1"
+
+    log.print.data = true
+    log.print.delay.ms = 1000
+  }
+}

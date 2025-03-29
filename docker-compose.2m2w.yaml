@@ -10,7 +10,7 @@ services:
     container_name: seatunnel-master1
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5701,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       #- JAVA_CLASSPATH=/opt/seatunnel/lib
@@ -41,7 +41,7 @@ services:
     container_name: seatunnel-master2
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5701,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       #- JAVA_CLASSPATH=/opt/seatunnel/lib
@@ -72,7 +72,7 @@ services:
     container_name: seatunnel-worker-1
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5701,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
@@ -101,7 +101,7 @@ services:
     container_name: seatunnel-worker-2
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5701,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
         #- JAVA_CLASSPATH=/opt/seatunnel/lib

@@ -16,6 +16,12 @@ logs:
 master.shell:
 	docker compose exec master bash
 
+master1.shell:
+	docker compose exec master1 bash
+
+master2.shell:
+	docker compose exec master2 bash
+
 worker1.shell:
 	docker compose exec worker1 bash
 
