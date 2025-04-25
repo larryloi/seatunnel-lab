@@ -25,3 +25,5 @@ hazelcast-client:
   network:
     cluster-members:
       - 172.19.0.50-70
+
+

@@ -25,8 +25,7 @@ property.file_split_size = 100MB
 property.file_count = 100
 property.file_ttl = 7d
 
-rootLogger.level = ERROR
-rootLogger.appenderRefs = consoleStdoutAppender,consoleStderrAppender
+rootLogger.level = INFO, ERROR, DEBUG
 
 ############################ log output to console #############################
 rootLogger.appenderRef.consoleStdout.ref = consoleStdoutAppender

@@ -2,15 +2,12 @@
 
 services:
   master1:
-    # image: apache/seatunnel:2.3.9
-    build:
-      context: .
-      dockerfile: ./Dockerfile-seatunnel-kas
+    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
     hostname: seatunnel-master1
     container_name: seatunnel-master1
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.50:5701,172.199.0.51:5701,172.199.0.52,172.199.0.53
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       #- JAVA_CLASSPATH=/opt/seatunnel/lib
@@ -30,18 +27,15 @@ services:
       # - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
       integration:
-        ipv4_address: 172.199.0.11
+        ipv4_address: 172.199.0.50
 
   master2:
-    # image: apache/seatunnel:2.3.9
-    build:
-      context: .
-      dockerfile: ./Dockerfile-seatunnel-kas
+    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
     hostname: seatunnel-master2
     container_name: seatunnel-master2
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.50:5701,172.199.0.51:5701,172.199.0.52,172.199.0.53
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       #- JAVA_CLASSPATH=/opt/seatunnel/lib
@@ -61,18 +55,15 @@ services:
       # - ./job_run.sh:/opt/seatunnel/job_run.sh
     networks:
       integration:
-        ipv4_address: 172.199.0.12
+        ipv4_address: 172.199.0.51
 
   worker1:
-    #image: apache/seatunnel:2.3.9
-    build:
-      context: .
-      dockerfile: ./Dockerfile-seatunnel-kas
+    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
     hostname: seatunnel-worker-1
     container_name: seatunnel-worker-1
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.50:5701,172.199.0.51:5701,172.199.0.52,172.199.0.53
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
@@ -90,18 +81,15 @@ services:
       - master1
     networks:
       integration:
-        ipv4_address: 172.199.0.13
+        ipv4_address: 172.199.0.52
 
   worker2:
-    # image: apache/seatunnel:2.3.9
-    build:
-      context: .
-      dockerfile: ./Dockerfile-seatunnel-kas
+    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
     hostname: seatunnel-worker-2
     container_name: seatunnel-worker-2
     environment:
       - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.11:5701,172.199.0.12:5702,172.199.0.13,172.199.0.14
+      - ST_DOCKER_MEMBER_LIST=172.199.0.50:5701,172.199.0.51:5701,172.199.0.52,172.199.0.53
       # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
         #- IJAVA_CLASSPATH=/opt/seatunnel/lib
         #- JAVA_CLASSPATH=/opt/seatunnel/lib
@@ -119,7 +107,7 @@ services:
       - master1
     networks:
       integration:
-        ipv4_address: 172.199.0.14
+        ipv4_address: 172.199.0.53
 
 #   mysql:
 #     build:
@@ -135,7 +123,7 @@ services:
 #       - mysql_data:/var/lib/mysql
 #     networks:
 #       integration:
-#         ipv4_address: 172.199.0.20
+#         ipv4_address: 172.199.0.53
 
 #   web:
 #     build:
@@ -154,7 +142,7 @@ services:
 #       - "8801:8801"
 #     networks:
 #       integration:
-#         ipv4_address: 172.199.0.21
+#         ipv4_address: 172.199.0.55
 #     depends_on:
 #       - master
 #       - mysql

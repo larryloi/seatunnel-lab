@@ -1,5 +1,5 @@
 # mysql/Dockerfile
-FROM mysql:8.0
+FROM mysql:8.0.33
 
 ENV MYSQL_ROOT_PASSWORD=123456
 ENV MYSQL_DATABASE=seatunnel
