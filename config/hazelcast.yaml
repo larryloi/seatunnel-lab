@@ -16,7 +16,7 @@
 #
 
 hazelcast:
-  cluster-name: seatunnel
+  cluster-name: seatunnel-test-lab
   network:
     rest-api:
       enabled: true
@@ -29,10 +29,11 @@ hazelcast:
       tcp-ip:
         enabled: true
         member-list:
-          - 172.19.0.50-70
-#     port:
-#       auto-increment: false
-#       port: 5801
+          - 172.19.0.50
+    port:
+      auto-increment: true
+      port-count: 100
+      port: 5801
   properties:
     hazelcast.invocation.max.retry.count: 20
     hazelcast.tcp.join.port.try.count: 30

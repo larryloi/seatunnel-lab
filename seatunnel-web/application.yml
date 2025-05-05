@@ -5,7 +5,7 @@ server:
 seatunnel:
   server:
     host: seatunnel-master1  # Service name from Docker Compose
-    port: 5701       # Adjust if the seatunnel server uses a different port
+    port: 5801       # Adjust if the seatunnel server uses a different port
 #   engine:
 #     http:
 #       enable-http: true

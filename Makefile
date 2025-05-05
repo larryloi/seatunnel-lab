@@ -1,6 +1,7 @@
 DEFAULT_MASTER = master1
 SEATUNNEL_VER = 2.3.10
 
+
 network.create:
 	docker network create --driver bridge --subnet 172.199.0.0/24 --gateway 172.199.0.1 integration || true
 
