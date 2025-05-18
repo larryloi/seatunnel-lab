@@ -43,3 +43,7 @@ seatunnel:
       enable-http: true
       port: 8080
       context-path: /seatunnel
+    event-report-http:
+      url: "http://0.0.0.0:1024/event/report"
+      headers:
+        Content-Type: application/json

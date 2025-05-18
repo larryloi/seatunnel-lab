@@ -5,15 +5,15 @@ ee:
 # vup:
 # 	nohup /opt/seatunnel/bin/seatunnel.sh --config ${name} -i SRC_DB_USER=${SRC_DB_USER} -i SRC_DB_PASSWORD='${SRC_DB_PASSWORD}' -i SRC_DB_URL={SRC_DB_URL} -i SINK_DB_USER=${SINK_DB_USER} -i SINK_DB_PASSWORD='${SINK_DB_USER}' -i SINK_DB_URL=${SINK_DB_URL} 2>&1 &
   
-vup:
+up.fg:
 	/opt/seatunnel/bin/seatunnel.sh --config ${name} -i SRC_DB_USER=${SRC_DB_USER} -i SRC_DB_PASSWORD='${SRC_DB_PASSWORD}' -i SINK_DB_USER=${SINK_DB_USER} -i SINK_DB_PASSWORD='${SINK_DB_USER}'  
 
-vup.be:
+up.bg:
 	nohup /opt/seatunnel/bin/seatunnel.sh --config ${name} -i SRC_DB_USER=${SRC_DB_USER} -i SRC_DB_PASSWORD='${SRC_DB_PASSWORD}' -i SINK_DB_USER=${SINK_DB_USER} -i SINK_DB_PASSWORD='${SINK_DB_USER}' 2>&1 &
 
 
-up.be:
-	nohup /opt/seatunnel/bin/seatunnel.sh --config ${name} 2>&1 &
+#up.be:
+#	nohup /opt/seatunnel/bin/seatunnel.sh --config ${name} 2>&1 &
 
 
 list:
