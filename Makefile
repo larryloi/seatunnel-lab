@@ -1,5 +1,19 @@
-DEFAULT_MASTER = master1
-SEATUNNEL_VER = 2.3.10
+include Makefile.env
+
+ct ?= 
+
+# Helper to conditionally add container argument
+CONTAINER_ARG = $(if $(ct),$(ct),)
+
+VARS_TO_PRINT = ct DEFAULT_MASTER SEATUNNEL_VER
+
+define print_vars
+	@echo "Makefile variables:"
+	$(foreach var,$(VARS_TO_PRINT),\
+		echo "  $(var) = $($(var))\n"\
+	)
+endef
+
 
 
 network.create:
@@ -16,26 +30,35 @@ volume.list:
 
 
 ps:
-	docker compose ps
+	$(print_vars)
+	docker compose ps -a
 
 up:
-	docker compose up -d
+	$(print_vars)
+	docker compose up -d $(CONTAINER_ARG)
+
+stop:
+	docker compose stop $(CONTAINER_ARG)
 
 down:
-	docker compose down
+	docker compose down $(CONTAINER_ARG)
 
 logs:
-	docker compose logs -f
+	docker compose logs -f $(CONTAINER_ARG)
 
-master.shell:
-	docker compose exec $(DEFAULT_MASTER) bash
+shell:
+	docker compose exec $(CONTAINER_ARG) bash
 
-
-worker1.shell:
-	docker compose exec worker1 bash
-
-worker2.shell:
-	docker compose exec worker2 bash
+run:
+	docker run \
+		--rm \
+		--name seatunnel-$(CONTAINER_ARG)-running \
+		--network integration \
+		-v ./seatunnel-web/application.yml:/opt/app/seatunnel-web/conf/application.yml \
+		-v ./seatunnel-web/logs:/opt/app/seatunnel-web/logs \
+		-v ./seatunnel-web/hazelcast-client.yaml:/opt/app/seatunnel-web/conf/hazelcast-client.yaml \
+		-v ./seatunnel-web/plugin-mapping.properties:/opt/app/seatunnel-web/conf/plugin-mapping.properties \
+		-ti $(image) /bin/sh
 
 job.list:
 	docker compose exec master /opt/seatunnel/bin/seatunnel.sh --list | grep -v INFO

@@ -16,11 +16,11 @@ spring:
   profiles:
     active: mysql
   application:
-    name: seatunnel-web
+    name: seatunnel
   datasource:
     url: jdbc:mysql://seatunnel-mysql:3306/seatunnel?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
-    password: "123456"
+    password: "Abcd1234"
     driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:

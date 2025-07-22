@@ -29,7 +29,7 @@ hazelcast:
       tcp-ip:
         enabled: true
         member-list:
-          - 172.19.0.50-52
+          - 172.19.0.50
 #     port:
 #       auto-increment: false
 #       port: 5801
