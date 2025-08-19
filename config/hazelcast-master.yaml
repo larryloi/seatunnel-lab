@@ -16,10 +16,10 @@
 #
 
 hazelcast:
-  cluster-name: seatunnel-test-lab
+  cluster-name: seatunnel
   network:
     rest-api:
-      enabled: true
+      enabled: false
       endpoint-groups:
         CLUSTER_WRITE:
           enabled: true
@@ -29,10 +29,11 @@ hazelcast:
       tcp-ip:
         enabled: true
         member-list:
-          - 172.19.0.50
-#     port:
-#       auto-increment: false
-#       port: 5801
+          - localhost:5801
+          - localhost:5802
+    port:
+      auto-increment: false
+      port: 5801
   properties:
     hazelcast.invocation.max.retry.count: 20
     hazelcast.tcp.join.port.try.count: 30

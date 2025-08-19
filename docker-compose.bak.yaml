@@ -15,7 +15,6 @@ services:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config
-      - ./shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
     networks:
       seatunnel-network:
@@ -93,7 +92,6 @@ services:
       - master
       - mysql
     volumes:
-      - ./shared-connectors:/shared-connectors
       - ./seatunnel-web/application.yml:/app/conf/application.yml
 
 networks:
@@ -105,4 +103,3 @@ networks:
 
 volumes:
   mysql_data:
-  shared-connectors:

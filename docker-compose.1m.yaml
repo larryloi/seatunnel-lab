@@ -26,13 +26,10 @@ services:
       - "5801:5801"
       - "5701:5701"
     volumes:
-      - ./config:/opt/seatunnel/config
-        #- ../st_src/lib:/opt/seatunnel/lib
-        #- ../st_src/shared-connectors:/shared-connectors
+      - ./config:/opt/seatunnel/config/config
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-      - seatunnel_master1_data:/opt/seatunnel/data
-      - seatunnel_logs:/opt/seatunnel/logs
+      - ./key_store:/key_store
     networks:
       integration:
         ipv4_address: 172.199.0.50
@@ -54,31 +51,6 @@ services:
       integration:
         ipv4_address: 172.199.0.60
 
-  web:
-    image: seatunnel-web:0.1.0
-    hostname: seatunnel-web
-    container_name: seatunnel-web
-    environment:
-      - SEATUNNEL_MASTER_HOST=172.199.0.50
-      - MYSQL_HOST=172.199.0.60
-      - MYSQL_PORT=3306
-      - MYSQL_DB=seatunnel
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=Abcd1234
-      - SEATUNNEL_HOME=/opt/app/seatunnel-web
-    ports:
-      - "8080:8080"
-      - "8801:8801"
-    networks:
-      integration:
-        ipv4_address: 172.199.0.61
-    depends_on:
-      - master1
-      - mysql
-    volumes:
-      - ./shared-connectors:/shared-connectors
-      - ./seatunnel-web/application.yml:/opt/app/seatunnel-web/conf/application.yml
-      - ./seatunnel-web/hazelcast-client.yaml:/opt/app/seatunnel-web/conf/hazelcast-client.yaml
 
 
 networks:
@@ -87,7 +59,6 @@ networks:
 
 volumes:
   mysql_data:
-  shared-connectors:
   seatunnel_master1_data:
   seatunnel_worker1_data:
   seatunnel_worker2_data:

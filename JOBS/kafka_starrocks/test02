@@ -108,7 +108,7 @@ sink {
 
 sink {
   jdbc {
-    plugin_input_table = "flattened_after_table"
+    plugin_input_table = ["flattened_after_table"]
     url = "jdbc:mysql://db01.kaskade.local:3306/DWH_Seatunnel?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true"
     driver = "com.mysql.cj.jdbc.Driver"
     user = "seatunnel_sink"

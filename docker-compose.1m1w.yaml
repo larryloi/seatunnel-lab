@@ -2,62 +2,47 @@
 
 services:
   master1:
-    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
-    #build:
-    #  context: .
-    #  dockerfile: ./Dockerfile-seatunnel-kas
+    image: seatunnel-2.3.11-kas:latest
     hostname: seatunnel-master1
     container_name: seatunnel-master1
-    environment:
-      - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.50,172.199.0.51
-      - SRC_DB_USER=seatunnel_src
-      - SRC_DB_PASSWORD=Abcd1234
-      - SINK_DB_USER=seatunnel_sink
-      - SINK_DB_PASSWORD=Abcd1234
-      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
-        #- IJAVA_CLASSPATH=/opt/seatunnel/lib
-      #- JAVA_CLASSPATH=/opt/seatunnel/lib
+    env_file:
+      - ./docker-compose.env
+
     entrypoint: >
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r master
       "    
     ports:
-      - "5801:5801"
-      - "5701:5701"
+      - "8080:8080"
+      - "8443:8443"
+#       - "5801:5801"
     volumes:
-      - ./config:/opt/seatunnel/config
-        #- ../st_src/lib:/opt/seatunnel/lib
-        #- ../st_src/shared-connectors:/shared-connectors
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-      - seatunnel_master1_data:/opt/seatunnel/data
-      - seatunnel_logs:/opt/seatunnel/logs
+      - ./config:/opt/seatunnel/config
+      # - ./connectors:/opt/seatunnel/connectors
+      - ./key_store:/key_store
     networks:
       integration:
         ipv4_address: 172.199.0.50
 
   worker1:
-    image: quay.io/larryloi/seatunnel-2.3.10-kas:latest
+    image: seatunnel-2.3.11-kas:latest
     hostname: seatunnel-worker-1
     container_name: seatunnel-worker-1
-    environment:
-      - TZ=Asia/Macau
-      - ST_DOCKER_MEMBER_LIST=172.199.0.50,172.199.0.51
+    env_file:
+      - ./docker-compose.env
 
-      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
-        #- IJAVA_CLASSPATH=/opt/seatunnel/lib
-      # - JAVA_CLASSPATH=/opt/seatunnel/lib:/opt/seatunnel/starter
     entrypoint: >
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker
       " 
     volumes:
-      - ./config:/opt/seatunnel/config
       - ./JOBS:/opt/seatunnel/JOBS
       - ./Makefile.ct:/opt/seatunnel/Makefile
-      - seatunnel_worker1_data:/opt/seatunnel/data
-      - seatunnel_logs:/opt/seatunnel/logs
+      - ./config:/opt/seatunnel/config
+      # - ./connectors:/opt/seatunnel/connectors
+      - ./key_store:/key_store
     depends_on:
       - master1
     networks:
@@ -81,32 +66,6 @@ services:
       integration:
         ipv4_address: 172.199.0.60
 
-  web:
-    image: seatunnel-web:0.1.0
-    hostname: seatunnel-web
-    container_name: seatunnel-web
-    environment:
-      - SEATUNNEL_MASTER_HOST=172.199.0.50
-      - MYSQL_HOST=172.199.0.60
-      - MYSQL_PORT=3306
-      - MYSQL_DB=seatunnel
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=Abcd1234
-      - SEATUNNEL_HOME=/opt/app/seatunnel-web
-    ports:
-      - "8080:8080"
-      - "8801:8801"
-    networks:
-      integration:
-        ipv4_address: 172.199.0.61
-    depends_on:
-      - master1
-      - mysql
-    volumes:
-      - ./shared-connectors:/shared-connectors
-      - ./seatunnel-web/application.yml:/opt/app/seatunnel-web/conf/application.yml
-      - ./seatunnel-web/hazelcast-client.yaml:/opt/app/seatunnel-web/conf/hazelcast-client.yaml
-
 
 networks:
   integration:
@@ -114,7 +73,6 @@ networks:
 
 volumes:
   mysql_data:
-  shared-connectors:
   seatunnel_master1_data:
   seatunnel_worker1_data:
   seatunnel_worker2_data:

@@ -68,7 +68,7 @@ sink {
       format = "JSON"
       strip_outer_array = true
     }
-    plugin_input = "fake1"
+    plugin_input = ["fake1"]
     plugin_output = "fake2"
   }
 }

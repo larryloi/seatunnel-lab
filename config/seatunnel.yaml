@@ -17,6 +17,7 @@
 
 seatunnel:
   engine:
+    classloader-cache-mode: true
     history-job-expire-minutes: 1440
     backup-count: 1
     queue-type: blockingqueue
@@ -31,19 +32,30 @@ seatunnel:
         type: hdfs
         max-retained: 3
         plugin-config:
-          namespace: /opt/seatunnel/data/checkpoint_snapshot
-          # namespace: /tmp/seatunnel/checkpoint_snapshot
+          namespace: /tmp/seatunnel/checkpoint_snapshot
           storage.type: hdfs
-          #fs.defaultFS: file:///tmp/ # Ensure that the directory has written permission
-          fs.defaultFS: file:/opt/seatunnel/data
+          fs.defaultFS: file:///tmp/ # Ensure that the directory has written permission
     telemetry:
       metric:
         enabled: false
+      log:
+        scheduled-deletion-enable: true
     http:
       enable-http: true
       port: 8080
-      context-path: /seatunnel
-    event-report-http:
-      url: "http://0.0.0.0:1024/event/report"
-      headers:
-        Content-Type: application/json
+      enable-https: true
+      https-port: 8443
+
+      enable-basic-auth: true
+      basic-auth-username: "admin"
+      basic-auth-password: "admin"
+
+      key-store-path: /key_store/server_keystore.jks
+      key-store-password: "Abcd1234"
+      key-manager-password: "Abcd1234"
+
+      #trust-store-path: /key_store/server_truststore.jks
+      #trust-store-password: "Abcd1234"
+
+      #enable-dynamic-port: false
+      #port-range: 100

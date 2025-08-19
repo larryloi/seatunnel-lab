@@ -20,7 +20,7 @@ network.create:
 	docker network create --driver bridge --subnet 172.199.0.0/24 --gateway 172.199.0.1 integration || true
 
 build:
-	docker build -t quay.io/larryloi/seatunnel-$(SEATUNNEL_VER)-kas:latest -f ./Dockerfile-seatunnel-kas .
+	docker build -t seatunnel-$(SEATUNNEL_VER)-kas:latest -f ./Dockerfile-seatunnel-kas .
 
 volume.rm.all:
 	docker volume rm $$(docker volume ls -qf dangling=true)
@@ -49,22 +49,48 @@ logs:
 shell:
 	docker compose exec $(CONTAINER_ARG) bash
 
-run:
-	docker run \
-		--rm \
-		--name seatunnel-$(CONTAINER_ARG)-running \
-		--network integration \
-		-v ./seatunnel-web/application.yml:/opt/app/seatunnel-web/conf/application.yml \
-		-v ./seatunnel-web/logs:/opt/app/seatunnel-web/logs \
-		-v ./seatunnel-web/hazelcast-client.yaml:/opt/app/seatunnel-web/conf/hazelcast-client.yaml \
-		-v ./seatunnel-web/plugin-mapping.properties:/opt/app/seatunnel-web/conf/plugin-mapping.properties \
-		-ti $(image) /bin/sh
+
+
+# job.list:
+# 	docker compose exec master /opt/seatunnel/bin/seatunnel.sh --list | grep -v INFO
+# 
+# job.run:
+# 	docker compose exec master bash -c "bash /opt/seatunnel/job_run.sh $(name) "
+# 
+# job.cancel:
+# 	docker compose exec master bash -c "/opt/seatunnel/bin/seatunnel.sh --cancel-job $(name)"
+
+system.info:
+	@echo "System information:"
+	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} ${baseUrl}/system-monitoring-information | jq '.'
 
 job.list:
-	docker compose exec master /opt/seatunnel/bin/seatunnel.sh --list | grep -v INFO
+	@echo "Running jobs:"
+	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} ${baseUrl}/running-jobs | jq -r '["JOB ID", "JOB NAME", "STATUS"], (.[] | [.jobId, .jobName, .jobStatus]) | @tsv ' | column -s : -t| sed 's/\"//g'
 
-job.run:
-	docker compose exec master bash -c "bash /opt/seatunnel/job_run.sh $(name) "
+job.stop:
+	@echo "Stopping job:"
+	curl ${CA_CERT} ${CURL_USER} -X POST ${CURL_USER} "${baseUrl}/stop-job" -H "Content-Type: application/json" -d "{\"jobId\": \"${name}\"}" | jq '.'
 
-job.cancel:
-	docker compose exec master bash -c "/opt/seatunnel/bin/seatunnel.sh --cancel-job $(name)"
+job.submit.file:
+	@echo "Submitting job file:"
+	curl ${CA_CERT} ${CURL_USER} --location '${baseUrl}/submit-job/upload' --form 'config_file=@"${name}"'
+
+job.submit:
+	@echo "Submitting job file:"
+	CONN_FILE=$(shell pwd)/${name}; \
+	CONN=$$(cat $${CONN_FILE}); \
+	echo "Creating connector $${name}"; \
+	echo "$${CONN}"; \
+	curl -X POST ${CURL_USER} ${baseUrl}/submit-job/upload ${CURL_USER} -H 'Content-Type: text/plain' -d "$${CONN}" | jq '.'
+
+
+
+
+###:
+#         CONN_FILE=$(shell pwd)/${name}; \
+#         CONN=$$(cat $${CONN_FILE}); \
+#         echo "Creating connector $${name}"; \
+#         curl -k -X POST "${baseUrl}/${objUrl}" -H 'Content-Type: text/plain' -d "$${CONN}" | jq '.'
+
+#  curl -k -X POST "${baseUrl}/${objUrl}" -H 'Content-Type: application/json' -d "$${CONN}" | jq '.'
