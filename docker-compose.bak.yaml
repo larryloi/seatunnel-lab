@@ -15,7 +15,7 @@ services:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config
-      - ./JOBS:/opt/seatunnel/JOBS
+      - ./job:/opt/seatunnel/job
     networks:
       seatunnel-network:
         ipv4_address: 172.16.0.2

@@ -27,7 +27,7 @@ services:
       - "5701:5701"
     volumes:
       - ./config:/opt/seatunnel/config/config
-      - ./JOBS:/opt/seatunnel/JOBS
+      - ./job:/opt/seatunnel/job
       - ./Makefile.ct:/opt/seatunnel/Makefile
       - ./key_store:/key_store
     networks:

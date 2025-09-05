@@ -18,7 +18,7 @@ services:
       - "5801:5801"
       - "8080:8080"
     volumes:
-      - ./JOBS:/opt/seatunnel/JOBS
+      - ./job:/opt/seatunnel/job
       - ./Makefile.ct:/opt/seatunnel/Makefile
       - ./config:/opt/seatunnel/config/config
       #- ./connectors:/opt/seatunnel/connectors
@@ -38,7 +38,7 @@ services:
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker
       " 
     volumes:
-      - ./JOBS:/opt/seatunnel/JOBS
+      - ./job:/opt/seatunnel/job
       - ./Makefile.ct:/opt/seatunnel/Makefile
       - ./config:/opt/seatunnel/config/config
       # - ./connectors:/opt/seatunnel/connectors
@@ -60,7 +60,7 @@ services:
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker 
       " 
     volumes:
-      - ./JOBS:/opt/seatunnel/JOBS
+      - ./job:/opt/seatunnel/job
       - ./Makefile.ct:/opt/seatunnel/Makefile
       - ./config:/opt/seatunnel/config/config
       # - ./connectors:/opt/seatunnel/connectors

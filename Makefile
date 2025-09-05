@@ -14,6 +14,8 @@ define print_vars
 	)
 endef
 
+CT_HOME=/opt/seatunnel
+
 
 
 network.create:
@@ -50,42 +52,44 @@ shell:
 	docker compose exec $(CONTAINER_ARG) bash
 
 
+ct.job.submit:
+	docker compose exec master1 bin/seatunnel.sh -c ${CT_HOME}/${name} 
 
-# job.list:
-# 	docker compose exec master /opt/seatunnel/bin/seatunnel.sh --list | grep -v INFO
-# 
-# job.run:
-# 	docker compose exec master bash -c "bash /opt/seatunnel/job_run.sh $(name) "
-# 
-# job.cancel:
-# 	docker compose exec master bash -c "/opt/seatunnel/bin/seatunnel.sh --cancel-job $(name)"
-
-system.info:
+api.system.info:
 	@echo "System information:"
 	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} ${baseUrl}/system-monitoring-information | jq '.'
 
-job.list:
+api.job.list:
 	@echo "Running jobs:"
 	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} ${baseUrl}/running-jobs | jq -r '["JOB ID", "JOB NAME", "STATUS"], (.[] | [.jobId, .jobName, .jobStatus]) | @tsv ' | column -s : -t| sed 's/\"//g'
 
-job.stop:
+api.job.info:
+	@echo "Job information:"
+	@echo "Job ID: ${name}"
+	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} "${baseUrl}/job-info/${name}" | jq -r '["JOB ID", "JOB NAME", "STATUS", "START TIME", "END TIME"], [.jobId, .jobName, .jobStatus, .startTime, .endTime] | @tsv '| column -s : -t | sed 's/\"//g'
+
+api.job.stop:
 	@echo "Stopping job:"
 	curl ${CA_CERT} ${CURL_USER} -X POST ${CURL_USER} "${baseUrl}/stop-job" -H "Content-Type: application/json" -d "{\"jobId\": \"${name}\"}" | jq '.'
 
-job.submit.file:
+api.job.submit:
 	@echo "Submitting job file:"
 	curl ${CA_CERT} ${CURL_USER} --location '${baseUrl}/submit-job/upload' --form 'config_file=@"${name}"'
 
-job.submit:
-	@echo "Submitting job file:"
-	CONN_FILE=$(shell pwd)/${name}; \
-	CONN=$$(cat $${CONN_FILE}); \
-	echo "Creating connector $${name}"; \
-	echo "$${CONN}"; \
-	curl -X POST ${CURL_USER} ${baseUrl}/submit-job/upload ${CURL_USER} -H 'Content-Type: text/plain' -d "$${CONN}" | jq '.'
+api.job.log:
+	@echo "Fetching job log:"
+	curl ${CA_CERT} ${CURL_USER} -X GET ${CURL_USER} "${baseUrl}/logs/${name}" 
 
 
 
+
+# job.submit:
+# 	@echo "Submitting job file:"
+# 	CONN_FILE=$(shell pwd)/${name}; \
+# 	CONN=$$(cat $${CONN_FILE}); \
+# 	echo "Creating connector $${name}"; \
+# 	echo "$${CONN}"; \
+# 	curl ${CA_CERT} ${CURL_USER} -X POST ${baseUrl}/submit-job/upload ${CURL_USER} -H 'Content-Type: application/json' -d "$${CONN}" | jq '.'
 
 ###:
 #         CONN_FILE=$(shell pwd)/${name}; \
@@ -94,3 +98,6 @@ job.submit:
 #         curl -k -X POST "${baseUrl}/${objUrl}" -H 'Content-Type: text/plain' -d "$${CONN}" | jq '.'
 
 #  curl -k -X POST "${baseUrl}/${objUrl}" -H 'Content-Type: application/json' -d "$${CONN}" | jq '.'
+#
+#
+#

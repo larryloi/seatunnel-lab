@@ -1,4 +1,13 @@
 lib/*.jar
 shared-connectors/*.jar
+connectors/*.jar
 starter/*.jar
 starter/logging/*.jar
+key_store/*.jks
+key_store/*.p12
+key_store/*.pem
+key_store/*.crt
+key_store/*.csr
+key_store/*.key
+key_store/*.jwk
+key_store/*.srl
