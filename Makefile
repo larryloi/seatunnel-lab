@@ -21,8 +21,11 @@ CT_HOME=/opt/seatunnel
 network.create:
 	docker network create --driver bridge --subnet 172.199.0.0/24 --gateway 172.199.0.1 integration || true
 
+build.mysql:
+	docker build -t seatunnel-mysql:0.1.0 -f ./Dockerfiles/Dockerfile-mysql .
+
 build:
-	docker build -t seatunnel-$(SEATUNNEL_VER)-kas:latest -f ./Dockerfile-seatunnel-kas .
+	docker build -t seatunnel-$(SEATUNNEL_VER)-kas:latest -f ./Dockerfiles/Dockerfile-seatunnel-kas .
 
 volume.rm.all:
 	docker volume rm $$(docker volume ls -qf dangling=true)
