@@ -1,0 +1,9 @@
+---
+startDelaySeconds: 0
+lowercaseOutputName: false
+lowercaseOutputLabelNames: false
+rules:
+- pattern: 'java.lang<type=OperatingSystem>(.*): process_cpu_usage'
+  name: 'jvm_cpu_usage'
+  value: 0
+

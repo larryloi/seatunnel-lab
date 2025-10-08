@@ -15,6 +15,7 @@ services:
     ports:
       - "8080:8080"
       - "8443:8443"
+      - "7071:7072"
 #       - "5801:5801"
     volumes:
       - ./job:/opt/seatunnel/job
@@ -22,6 +23,7 @@ services:
       - ./config:/opt/seatunnel/config
       # - ./connectors:/opt/seatunnel/connectors
       - ./key_store:/key_store
+      - ./jmx_exporter:/opt/jmx_exporter
     networks:
       integration:
         ipv4_address: 172.199.0.50
@@ -37,12 +39,15 @@ services:
       /bin/sh -c "
       /opt/seatunnel/bin/seatunnel-cluster.sh -r worker
       " 
+    ports:
+      - "7072:7072"
     volumes:
       - ./job:/opt/seatunnel/job
       - ./Makefile.ct:/opt/seatunnel/Makefile
       - ./config:/opt/seatunnel/config
       # - ./connectors:/opt/seatunnel/connectors
       - ./key_store:/key_store
+      - ./jmx_exporter:/opt/jmx_exporter
     depends_on:
       - master1
     networks:
