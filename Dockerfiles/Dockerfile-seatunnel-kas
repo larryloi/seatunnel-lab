@@ -1,4 +1,4 @@
-FROM apache/seatunnel:2.3.11
+FROM apache/seatunnel:2.3.12
 
 RUN apt update -y && \
     apt install -y make ncat && \

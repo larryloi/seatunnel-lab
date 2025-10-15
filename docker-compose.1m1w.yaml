@@ -2,7 +2,7 @@
 
 services:
   master1:
-    image: seatunnel-2.3.11-kas:latest
+    image: seatunnel-2.3.12-kas:latest
     hostname: seatunnel-master1
     container_name: seatunnel-master1
     env_file:
@@ -24,12 +24,13 @@ services:
       # - ./connectors:/opt/seatunnel/connectors
       - ./key_store:/key_store
       - ./jmx_exporter:/opt/jmx_exporter
+      - ./lib/mysql-connector-j-9.1.0.jar:/opt/seatunnel/lib/mysql-connector-j-9.1.0.jar
     networks:
       integration:
         ipv4_address: 172.199.0.50
 
   worker1:
-    image: seatunnel-2.3.11-kas:latest
+    image: seatunnel-2.3.12-kas:latest
     hostname: seatunnel-worker-1
     container_name: seatunnel-worker-1
     env_file:
@@ -48,6 +49,7 @@ services:
       # - ./connectors:/opt/seatunnel/connectors
       - ./key_store:/key_store
       - ./jmx_exporter:/opt/jmx_exporter
+      - ./lib/mysql-connector-j-9.1.0.jar:/opt/seatunnel/lib/mysql-connector-j-9.1.0.jar
     depends_on:
       - master1
     networks:
