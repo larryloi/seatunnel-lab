@@ -26,7 +26,7 @@ CYAN := \033[36m
 WHITE := \033[37m
 RESET := \033[0m
 
-.PHONY: help up down ps logs shell build build.mysql network.create volume.rm.all volume.list ct.job.submit api.system.info api.job.list api.job.info api.job.stop api.job.submit api.job.log stop env
+.PHONY: help up down ps logs shell build build.mysql network.create volume.rm.all volume.list ct.job.submit system.info job.list job.info job.stop job.submit job.log stop env
 
 help:
 	@echo "$(GREEN)Available targets:$(RESET)"
@@ -41,12 +41,12 @@ help:
 	@echo "  volume.rm.all    - Remove all dangling Docker volumes"
 	@echo "  volume.list      - List all Docker volumes"
 	@echo "  ct.job.submit    - Submit a job to Seatunnel KAS (ct=<container>)"
-	@echo "  api.system.info  - Get system information from Seatunnel KAS"
-	@echo "  api.job.list     - List running jobs in Seatunnel KAS"
-	@echo "  api.job.info     - Get information about a specific job (name=<job_id>)"
-	@echo "  api.job.stop     - Stop a specific job (name=<job_id>)"
-	@echo "  api.job.submit   - Submit a job file (name=<path_to_job_file>)"
-	@echo "  api.job.log      - Fetch logs for a specific job (name=<job_id>)"
+	@echo "  system.info  - Get system information from Seatunnel KAS"
+	@echo "  job.list     - List running jobs in Seatunnel KAS"
+	@echo "  job.info     - Get information about a specific job (name=<job_id>)"
+	@echo "  job.stop     - Stop a specific job (name=<job_id>)"
+	@echo "  job.submit   - Submit a job file (name=<path_to_job_file>)"
+	@echo "  job.log      - Fetch logs for a specific job (name=<job_id>)"
 	@echo "  help              - Show this help message"
 
 network.create:
@@ -111,29 +111,29 @@ ct.job.submit:
 	# Execute the job submission command inside the container
 	docker compose exec ${DEFAULT_MASTER} bin/seatunnel.sh -c ${CT_HOME}/$(shell basename $(name)) 
 
-api.system.info:
+system.info:
 	@echo "$(GREEN)System information:$(RESET)"
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} -X GET "${baseUrl}/system-monitoring-information" | jq '.'
 
-api.job.list:
+job.list:
 	@echo "$(GREEN)Running jobs:$(RESET)"
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} -X GET ${CURL_SECRET} ${baseUrl}/running-jobs | jq -r '["JOB ID", "JOB NAME", "STATUS"], (.[] | [.jobId, .jobName, .jobStatus]) | @tsv ' | column -s : -t| sed 's/\"//g'
 
-api.job.info:
+job.info:
 	@echo "$(GREEN)Job information:$(RESET)"
 	@echo "Job ID: ${name}"
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} -X GET ${CURL_SECRET} "${baseUrl}/job-info/${name}" | jq -r '["JOB ID", "JOB NAME", "STATUS", "START TIME", "END TIME"], [.jobId, .jobName, .jobStatus, .startTime, .endTime] | @tsv '| column -s : -t | sed 's/\"//g'
 
-api.job.stop:
+job.stop:
 	@echo "$(GREEN)Stopping job:$(RESET)"
 	@echo "Job ID: ${name}"
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} -X POST ${CURL_SECRET} "${baseUrl}/stop-job" -H "Content-Type: application/json" -d "{\"jobId\": \"${name}\"}" | jq '.'
 
-api.job.submit:
+job.submit:
 	@echo "$(GREEN)Submitting job file:$(RESET)"
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} --location '${baseUrl}/submit-job/upload' --form 'config_file=@"${name}"'
 
-api.job.log:
+job.log:
 	@echo "$(GREEN)Fetching job log:$(RESET)	@echo ""	@echo "Makefile variables:""
 	curl --fail --silent --show-error ${CA_CERT} ${CURL_SECRET} -X GET ${CURL_SECRET} "${baseUrl}/logs/${name}" 
 
